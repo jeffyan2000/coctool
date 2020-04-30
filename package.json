@@ -1,0 +1,22 @@
+{
+  "name": "coctool",
+  "version": "1.0.0",
+  "description": "Online web-based coc tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeffyan2000/coctool.git"
+  },
+  "author": "Jeff Yan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeffyan2000/coctool/issues"
+  },
+  "homepage": "https://github.com/jeffyan2000/coctool#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
