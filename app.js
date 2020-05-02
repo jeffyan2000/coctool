@@ -5,7 +5,9 @@ const express = require('express');
 const Player = require('./js/Player.js');
 
 const app = express();
-const port = 3000;
+const port = 5006;
+
+const tcpserver = require('http').Server(app);
 
 var PLAYER_LIST = {};
 
@@ -14,12 +16,9 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+tcpserver.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
 
-app.get('/',function(req, res) {
-	res.sendFile(__dirname + '/client/index.html');
-});
-app.use('/client',express.static(__dirname + '/client'));
+var io = require('socket.io')(tcpserver,{});
 
 server.on('error', (err) => {
   console.log(`server error:\n${err.stack}`);

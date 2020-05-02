@@ -11,7 +11,7 @@ class Player {
 
   init(){
       for (var key in KEYS.list) {
-        this.keypressed[key] = false;
+        this.keypressed[KEYS.list[key]] = false;
     }
   }
 
