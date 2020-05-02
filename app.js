@@ -1,9 +1,13 @@
 const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
-const express = require('express')
+const express = require('express');
 
-const app = express()
-const port = 3000
+const Player = require('./js/Player.js');
+
+const app = express();
+const port = 3000;
+
+var PLAYER_LIST = {};
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -11,12 +15,6 @@ app.get('/',function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
-
-class Player {
-    constructor(ipaddress) {
-      this.ipaddress = ipaddress;
-    }
-  }
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -30,6 +28,7 @@ server.on('error', (err) => {
 
 server.on('message', (msg, rinfo) => {
   console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  server.send(Buffer.from('Some bytes'), 5005, 'localhost');
 });
 
 server.on('listening', () => {
