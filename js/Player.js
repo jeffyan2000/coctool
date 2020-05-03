@@ -6,6 +6,7 @@ class Player {
     this.ipaddress = ipaddress;
     this.id = id;
     this.pos = [0, 0];
+    this.state = 0;
     this.speed = 5;
     this.keypressed = {};
     this.direction = [0, 0];

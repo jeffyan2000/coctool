@@ -11,6 +11,8 @@ const app = express();
 const tcp_port = 5006;
 //udp port
 const udp_port = 41234;
+//udp send
+const udp_port_send = 5005;
 
 //setup tcp server
 const tcpserver = require('http').Server(app);
@@ -25,7 +27,7 @@ var PLAYER_LIST = {};
 //receiving udp messages
 server.on('message', (msg, rinfo) => {
   console.log(`${msg} from ${rinfo.address}:${rinfo.port}`);
-  server.send(Buffer.from('Some bytes'), 5005, 'localhost');
+  server.send(Buffer.from('Some bytes'), udp_port_send, rinfo.address);
 });
 
 //receiving tcp messages
@@ -33,8 +35,14 @@ io.sockets.on('connection', function(socket){
 	console.log("new player joined");
     socket.id = Math.random();
 	console.log("id generated as " + socket.id);
-	
-	var player = new p.Player(socket.handshake.address, socket.id, socket);
+    
+    ipvaddress = socket.handshake.address;
+    if (ipvaddress.substr(0, 7) == "::ffff:") {
+        ipvaddress = ipvaddress.substr(7);
+    }
+    console.log(ipvaddress);
+
+	var player = new p.Player(ipvaddress, socket.id, socket);
     PLAYER_LIST[socket.id] = player;
 
 	socket.on('keyPressed',function(data){
@@ -57,8 +65,13 @@ server.bind(udp_port);
 console.log(`App listening udp at localhost:${udp_port}`)
 
 var sendPositionPacket = function(){
+    var positionPacket = [];
     for(playerKey in PLAYER_LIST){
         PLAYER_LIST[playerKey].update();
+        positionPacket.push(`${PLAYER_LIST[playerKey].pos[0]}-${PLAYER_LIST[playerKey].pos[1]}-${PLAYER_LIST[playerKey].state}`);
+    }
+    for(playerKey in PLAYER_LIST){
+        server.send(positionPacket, udp_port_send, PLAYER_LIST[playerKey].ipaddress);
     }
 }
 
