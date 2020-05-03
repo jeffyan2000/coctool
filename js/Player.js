@@ -10,7 +10,6 @@ class Player {
     this.keypressed = {};
     this.direction = [0, 0];
     this.init();
-    console.log(this.keypressed[KEYS.list.a]);
   }
 
   init(){
@@ -36,8 +35,6 @@ class Player {
       }
     this.pos[0] += this.speed * this.direction[0];
     this.pos[1] += this.speed * this.direction[1];
-
-    console.log(this.direction);
   }
 
   update(){

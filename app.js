@@ -38,6 +38,7 @@ io.sockets.on('connection', function(socket){
     PLAYER_LIST[socket.id] = player;
 
 	socket.on('keyPressed',function(data){
+        console.log(`${data} from ${player.ipaddress}`);
         player.updateKey(data[0], data[1])
     });
 
