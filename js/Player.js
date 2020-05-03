@@ -1,9 +1,10 @@
 var KEYS = require('./config/keys.json');
 
 class Player {
-  constructor(ipaddress) {
+  constructor(ipaddress, id, socket) {
+    this.socket = socket;
     this.ipaddress = ipaddress;
-    this.id = Math.random();
+    this.id = id;
     this.pos = [0, 0];
     this.speed = 5;
     this.keypressed = {};

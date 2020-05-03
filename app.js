@@ -2,37 +2,51 @@ const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
 const express = require('express');
 
-const Player = require('./js/Player.js');
+//import custom modules
+const p = require('./js/Player.js');
 
 const app = express();
-const port = 5006;
 
+//tcp port
+const tcp_port = 5006;
+//udp port
+const udp_port = 41234;
+
+//setup tcp server
 const tcpserver = require('http').Server(app);
-
-var PLAYER_LIST = {};
-
-app.get('/',function(req, res) {
-	res.sendFile(__dirname + '/client/index.html');
-});
-app.use('/client',express.static(__dirname + '/client'));
-
-tcpserver.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
-
+tcpserver.listen(tcp_port, () => console.log(`App listening tcp at localhost:${tcp_port}`))
 var io = require('socket.io')(tcpserver,{});
 
-server.on('error', (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
-});
+//------------------------------------------------------------------------------------------------------------------------------------
 
+//existing connections
+var PLAYER_LIST = {};
+
+//receiving udp messages
 server.on('message', (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  console.log(`${msg} from ${rinfo.address}:${rinfo.port}`);
   server.send(Buffer.from('Some bytes'), 5005, 'localhost');
 });
 
-server.on('listening', () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
+//receiving tcp messages
+io.sockets.on('connection', function(socket){
+	console.log("new player joined");
+    socket.id = Math.random();
+	console.log("id generated as " + socket.id);
+	
+	var player = new p.Player(socket.handshake.address, socket.id, socket);
+    PLAYER_LIST[socket.id] = player;
+	
+	socket.on('disconnect',function(){
+		  delete PLAYER_LIST[socket.id];
+		  console.log(socket.id + " left the game");
+    });
+
+    socket.on('info',function(data){
+		  console.log(`${data} from ${player.ipaddress}`);
+    });
 });
 
-server.bind(41234);
+//setup udp server
+server.bind(udp_port);
+console.log(`App listening udp at localhost:${udp_port}`)
