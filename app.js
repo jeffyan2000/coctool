@@ -50,3 +50,11 @@ io.sockets.on('connection', function(socket){
 //setup udp server
 server.bind(udp_port);
 console.log(`App listening udp at localhost:${udp_port}`)
+
+var sendPositionPacket = function(){
+    
+}
+
+setInterval(function(){
+    sendPositionPacket();
+},1000/15);
