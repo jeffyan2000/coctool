@@ -40,6 +40,10 @@ class Player {
     console.log(this.direction);
   }
 
+  update(){
+    this.move();
+  }
+
   updateKey(keyName, keyState){
       if(keyName in this.keypressed){
         this.keypressed[keyName] = keyState;

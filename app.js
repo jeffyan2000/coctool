@@ -36,7 +36,11 @@ io.sockets.on('connection', function(socket){
 	
 	var player = new p.Player(socket.handshake.address, socket.id, socket);
     PLAYER_LIST[socket.id] = player;
-	
+
+	socket.on('keyPressed',function(data){
+        player.updateKey(data[0], data[1])
+    });
+
 	socket.on('disconnect',function(){
 		  delete PLAYER_LIST[socket.id];
 		  console.log(socket.id + " left the game");
@@ -52,7 +56,9 @@ server.bind(udp_port);
 console.log(`App listening udp at localhost:${udp_port}`)
 
 var sendPositionPacket = function(){
-    
+    for(playerKey in PLAYER_LIST){
+        PLAYER_LIST[playerKey].update();
+    }
 }
 
 setInterval(function(){
