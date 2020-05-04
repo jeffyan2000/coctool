@@ -67,7 +67,7 @@ var sendPositionPacket = function(){
     var positionPacket = "";
     for(playerKey in PLAYER_LIST){
         PLAYER_LIST[playerKey].update();
-        positionPacket += `${PLAYER_LIST[playerKey].pos[0]}-${PLAYER_LIST[playerKey].pos[1]}-${PLAYER_LIST[playerKey].state}@`;
+        positionPacket += `${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[playerKey].state}@`;
     }
     for(playerKey in PLAYER_LIST){
         server.send(positionPacket, udp_port_send, PLAYER_LIST[playerKey].ipaddress);
