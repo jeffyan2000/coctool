@@ -40,7 +40,6 @@ io.sockets.on('connection', function(socket){
     if (ipvaddress.substr(0, 7) == "::ffff:") {
         ipvaddress = ipvaddress.substr(7);
     }
-    console.log(ipvaddress);
 
 	var player = new p.Player(ipvaddress, socket.id, socket);
     PLAYER_LIST[socket.id] = player;
@@ -57,6 +56,11 @@ io.sockets.on('connection', function(socket){
     socket.on('info',function(data){
 		  console.log(`${data} from ${player.ipaddress}`);
     });
+
+    socket.on('port',function(data){
+        player.port = data;
+        console.log(data);
+  });
 });
 
 //setup udp server
@@ -64,13 +68,15 @@ server.bind(udp_port);
 console.log(`App listening udp at localhost:${udp_port}`)
 
 var sendPositionPacket = function(){
-    var positionPacket = "";
+    var positionPacket = "000";
     for(playerKey in PLAYER_LIST){
         PLAYER_LIST[playerKey].update();
         positionPacket += `${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[playerKey].state}@`;
     }
     for(playerKey in PLAYER_LIST){
-        server.send(positionPacket, udp_port_send, PLAYER_LIST[playerKey].ipaddress);
+        if(PLAYER_LIST[playerKey].port != 0){
+            server.send(positionPacket, PLAYER_LIST[playerKey].port, PLAYER_LIST[playerKey].ipaddress);
+        }
     }
 }
 

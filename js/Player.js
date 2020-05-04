@@ -10,6 +10,7 @@ class Player {
     this.speed = 4;
     this.keypressed = {};
     this.direction = [0, 0];
+    this.port = 0;
     this.init();
   }
 
