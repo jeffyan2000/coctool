@@ -46,7 +46,6 @@ io.sockets.on('connection', function(socket){
     PLAYER_LIST[socket.id] = player;
 
 	socket.on('keyPressed',function(data){
-        console.log(`${data} from ${player.ipaddress}`);
         player.updateKey(data[0], data[1])
     });
 
@@ -65,10 +64,10 @@ server.bind(udp_port);
 console.log(`App listening udp at localhost:${udp_port}`)
 
 var sendPositionPacket = function(){
-    var positionPacket = [];
+    var positionPacket = "";
     for(playerKey in PLAYER_LIST){
         PLAYER_LIST[playerKey].update();
-        positionPacket.push(`${PLAYER_LIST[playerKey].pos[0]}-${PLAYER_LIST[playerKey].pos[1]}-${PLAYER_LIST[playerKey].state}`);
+        positionPacket += `${PLAYER_LIST[playerKey].pos[0]}-${PLAYER_LIST[playerKey].pos[1]}-${PLAYER_LIST[playerKey].state}@`;
     }
     for(playerKey in PLAYER_LIST){
         server.send(positionPacket, udp_port_send, PLAYER_LIST[playerKey].ipaddress);
@@ -77,4 +76,4 @@ var sendPositionPacket = function(){
 
 setInterval(function(){
     sendPositionPacket();
-},1000/15);
+},1000/20);

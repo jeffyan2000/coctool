@@ -7,7 +7,7 @@ class Player {
     this.id = id;
     this.pos = [0, 0];
     this.state = 0;
-    this.speed = 5;
+    this.speed = 4;
     this.keypressed = {};
     this.direction = [0, 0];
     this.init();
