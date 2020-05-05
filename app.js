@@ -8,15 +8,13 @@ const p = require('./js/Player.js');
 const app = express();
 
 //tcp port
-const tcp_port = 5006;
+const tcp_port = 6001;
 //udp port
-const udp_port = 41234;
-//udp send
-const udp_port_send = 5005;
+const udp_port = 6002;
 
 //setup tcp server
 const tcpserver = require('http').Server(app);
-tcpserver.listen(tcp_port, () => console.log(`App listening tcp at localhost:${tcp_port}`))
+tcpserver.listen(tcp_port, '0.0.0.0', () => console.log(`App listening tcp at localhost:${tcp_port}`))
 var io = require('socket.io')(tcpserver,{});
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -27,7 +25,7 @@ var PLAYER_LIST = {};
 //receiving udp messages
 server.on('message', (msg, rinfo) => {
   console.log(`${msg} from ${rinfo.address}:${rinfo.port}`);
-  server.send(Buffer.from('Some bytes'), udp_port_send, rinfo.address);
+  server.send(msg, 0, msg.length, rinfo.port, rinfo.address );
 });
 
 //receiving tcp messages
