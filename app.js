@@ -33,7 +33,7 @@ io.sockets.on('connection', function(socket){
 	console.log("new player joined");
     socket.id = Math.random();
 	console.log("id generated as " + socket.id);
-    
+    //get ip of client
     ipvaddress = socket.handshake.address;
     if (ipvaddress.substr(0, 7) == "::ffff:") {
         ipvaddress = ipvaddress.substr(7);
