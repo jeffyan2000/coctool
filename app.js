@@ -55,6 +55,10 @@ io.sockets.on('connection', function(socket){
 		  console.log(`${data} from ${player.ipaddress}`);
     });
 
+    socket.on('speech',function(data){
+        console.log(`${data} from ${player.ipaddress}`);
+    });
+
     socket.on('port',function(data){
         player.port = data;
         console.log(data);
