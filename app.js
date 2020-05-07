@@ -72,7 +72,7 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('speech',function(data){
-        console.log(`${data} from ${player.ipaddress}`);
+        boardcastAll(`001${player.id}${data}`);
     });
 
     socket.on('port',function(data){
@@ -84,17 +84,22 @@ io.sockets.on('connection', function(socket){
 server.bind(udp_port);
 console.log(`App listening udp at localhost:${udp_port}`)
 
+function boardcastAll(dataPacket){
+    for(playerKey in PLAYER_LIST){
+        if(PLAYER_LIST[playerKey].port != 0){
+            server.send(dataPacket, PLAYER_LIST[playerKey].port, PLAYER_LIST[playerKey].ipaddress);
+        }
+    }
+}
+
 var sendPositionPacket = function(){
     var positionPacket = "000";
     for(playerKey in PLAYER_LIST){
         PLAYER_LIST[playerKey].update();
-        positionPacket += `${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[playerKey].state}@`;
+        positionPacket += `${PLAYER_LIST[playerKey].id}*${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[playerKey].state}@`;
     }
-    for(playerKey in PLAYER_LIST){
-        if(PLAYER_LIST[playerKey].port != 0){
-            server.send(positionPacket, PLAYER_LIST[playerKey].port, PLAYER_LIST[playerKey].ipaddress);
-        }
-    }
+
+    boardcastAll(positionPacket);
 }
 
 setInterval(function(){
