@@ -57,18 +57,35 @@ io.sockets.on('connection', function(socket){
 
     socket.emit("id", socket.id);
 
+    var prevInfoPack = "";
+    for(playerKey in PLAYER_LIST){
+        if(playerKey != player.id){
+            prevInfoPack += `${PLAYER_LIST[playerKey].name}*${PLAYER_LIST[playerKey].skin}*${playerKey}@`;
+        }
+    }
+    socket.emit("new_players", prevInfoPack);
+
 	socket.on('keyPressed',function(data){
-        player.updateKey(data[0], data[1])
+        if(data[1] == "0"){
+            player.updateKey(data[0], false)
+        }
+        else{
+            player.updateKey(data[0], true)
+        }
     });
 
 	socket.on('disconnect',function(){
           delete PLAYER_LIST[socket.id];
           ID_LIST[socket.id] = true;
-		  console.log(socket.id + " left the game");
+          console.log(socket.id + " left the game");
+          boardcastAllSockets("remove_player", player.id);
     });
 
     socket.on('info',function(data){
-		  console.log(`${data} from ${player.ipaddress}`);
+          var player_info = data.split("@");
+          player.name = player_info[0];
+          player.skin = player_info[1];
+          boardcastAllSockets("new_player", data+"@"+player.id);
     });
 
     socket.on('speech',function(data){
@@ -92,16 +109,26 @@ function boardcastAll(dataPacket){
     }
 }
 
+function boardcastAllSockets(title, dataPacket){
+    for(playerKey in PLAYER_LIST){
+        PLAYER_LIST[playerKey].socket.emit(title, dataPacket);
+    }
+}
+
 var sendPositionPacket = function(){
     for(playerKey in PLAYER_LIST){
-        PLAYER_LIST[playerKey].update();
+        if(PLAYER_LIST[playerKey].ready()){
+            PLAYER_LIST[playerKey].update();
+        }
     }
 
     for(playerKey in PLAYER_LIST){
-        if(PLAYER_LIST[playerKey].port != 0){
+        if(PLAYER_LIST[playerKey].ready()){
             PLAYER_LIST[playerKey].positionData = "000";
             for(targetKey in PLAYER_LIST){
-                PLAYER_LIST[playerKey].positionData += `${PLAYER_LIST[targetKey].id}*${PLAYER_LIST[targetKey].pos[0]-PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[targetKey].pos[1]-PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[targetKey].state}@`;
+                if(PLAYER_LIST[playerKey].ready()){
+                    PLAYER_LIST[playerKey].positionData += `${PLAYER_LIST[targetKey].id}*${PLAYER_LIST[targetKey].pos[0]-PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[targetKey].pos[1]-PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[targetKey].state}@`;
+                }
             }
             server.send(PLAYER_LIST[playerKey].positionData, PLAYER_LIST[playerKey].port, PLAYER_LIST[playerKey].ipaddress);
         }

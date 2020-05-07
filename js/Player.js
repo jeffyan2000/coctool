@@ -11,6 +11,8 @@ class Player {
     this.keypressed = {};
     this.direction = [0, 0];
     this.port = 0;
+    this.name = "";
+    this.skin = "";
     this.init();
 
     this.positionData = "";
@@ -20,6 +22,13 @@ class Player {
       for (var key in KEYS.list) {
         this.keypressed[KEYS.list[key]] = false;
     }
+  }
+
+  ready(){
+    if(this.name != "" && this.port != 0 && this.skin != ""){
+      return true;
+    }
+    return false;
   }
 
   move(){
