@@ -18,6 +18,13 @@ tcpserver.listen(tcp_port, '0.0.0.0', () => console.log(`App listening tcp at lo
 var io = require('socket.io')(tcpserver,{});
 
 //------------------------------------------------------------------------------------------------------------------------------------
+ID_LIST = {}
+ID_VOC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+for (var i = 0; i < ID_VOC.length; i++) {
+    for (var l = 0; l < ID_VOC.length; l++) {
+        ID_LIST[ID_VOC.charAt(i) + ID_VOC.charAt(l)] = true;
+    }
+}
 
 //existing connections
 var PLAYER_LIST = {};
@@ -30,8 +37,14 @@ server.on('message', (msg, rinfo) => {
 
 //receiving tcp messages
 io.sockets.on('connection', function(socket){
-	console.log("new player joined");
-    socket.id = Math.random();
+    console.log("new player joined");
+    for(var key in ID_LIST){
+        if(ID_LIST[key]){
+            socket.id = key;
+            ID_LIST[key] = false;
+            break;
+        }
+    }
 	console.log("id generated as " + socket.id);
     //get ip of client
     ipvaddress = socket.handshake.address;
@@ -42,12 +55,15 @@ io.sockets.on('connection', function(socket){
 	var player = new p.Player(ipvaddress, socket.id, socket);
     PLAYER_LIST[socket.id] = player;
 
+    socket.emit("id", socket.id);
+
 	socket.on('keyPressed',function(data){
         player.updateKey(data[0], data[1])
     });
 
 	socket.on('disconnect',function(){
-		  delete PLAYER_LIST[socket.id];
+          delete PLAYER_LIST[socket.id];
+          ID_LIST[socket.id] = true;
 		  console.log(socket.id + " left the game");
     });
 
@@ -61,7 +77,6 @@ io.sockets.on('connection', function(socket){
 
     socket.on('port',function(data){
         player.port = data;
-        console.log(data);
   });
 });
 
