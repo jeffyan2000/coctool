@@ -93,13 +93,19 @@ function boardcastAll(dataPacket){
 }
 
 var sendPositionPacket = function(){
-    var positionPacket = "000";
     for(playerKey in PLAYER_LIST){
         PLAYER_LIST[playerKey].update();
-        positionPacket += `${PLAYER_LIST[playerKey].id}*${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[playerKey].state}@`;
     }
 
-    boardcastAll(positionPacket);
+    for(playerKey in PLAYER_LIST){
+        if(PLAYER_LIST[playerKey].port != 0){
+            PLAYER_LIST[playerKey].positionData = "000";
+            for(targetKey in PLAYER_LIST){
+                PLAYER_LIST[playerKey].positionData += `${PLAYER_LIST[targetKey].id}*${PLAYER_LIST[targetKey].pos[0]-PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[targetKey].pos[1]-PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[targetKey].state}@`;
+            }
+            server.send(PLAYER_LIST[playerKey].positionData, PLAYER_LIST[playerKey].port, PLAYER_LIST[playerKey].ipaddress);
+        }
+    }
 }
 
 setInterval(function(){

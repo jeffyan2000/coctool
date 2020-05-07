@@ -12,6 +12,8 @@ class Player {
     this.direction = [0, 0];
     this.port = 0;
     this.init();
+
+    this.positionData = "";
   }
 
   init(){
