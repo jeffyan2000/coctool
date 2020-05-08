@@ -23,10 +23,10 @@ class Room {
           var tempPoints = [Math.floor((player.pos[1]+60)/this.tileSize), Math.floor((player.pos[1]+75)/this.tileSize),
                             Math.floor((player.pos[0]+20)/this.tileSize), Math.floor((player.pos[0]+60)/this.tileSize)];
           
-          if((tempPoints[0] > this.mapSize[1] || tempPoints[0] < 0) ||
-              (tempPoints[1] > this.mapSize[1] || tempPoints[1] < 0) ||
-              (tempPoints[2] > this.mapSize[0] || tempPoints[2] < 0) ||
-              (tempPoints[3] > this.mapSize[0] || tempPoints[3] < 0)){
+          if((tempPoints[0] >= this.mapSize[1] || tempPoints[0] < 0) ||
+              (tempPoints[1] >= this.mapSize[1] || tempPoints[1] < 0) ||
+              (tempPoints[2] >= this.mapSize[0] || tempPoints[2] < 0) ||
+              (tempPoints[3] >= this.mapSize[0] || tempPoints[3] < 0)){
                 player.setPos(tempPos[0], tempPos[1]);
               }
           
@@ -60,11 +60,11 @@ class Room {
           for(var tile in contents[line]){
             if(contents[line][tile]){
               this.hitboxes[line].push(contents[line][tile]);
-              this.mapSize[0] += 1;
             }
           }
         }
       }
+      this.mapSize[0] = this.hitboxes[0].length;
     }
   }
 

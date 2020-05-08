@@ -128,9 +128,20 @@ var sendPositionPacket = function(){
         if(PLAYER_LIST[playerKey].ready()){
             PLAYER_LIST[playerKey].positionData = `000!*${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}@`;
             var mapSize = [room.tileSize*room.mapSize[0], room.tileSize*room.mapSize[1]];
+            var tempPos = [PLAYER_LIST[playerKey].pos[0], PLAYER_LIST[playerKey].pos[1]];
+            if(tempPos[1] - 217 < 0){
+                tempPos[1] -= tempPos[1] - 217;
+            } else if(tempPos[1] + 283 > mapSize[1]){
+                tempPos[1] -= tempPos[1] + 283 - mapSize[1];
+            }
+            if(tempPos[0] - 267 < 0){
+                tempPos[0] -= tempPos[0] - 267;
+            } else if(tempPos[0] + 333 > mapSize[0]){
+                tempPos[0] -= tempPos[0] + 333 - mapSize[0];
+            }
             for(targetKey in room.players){
                 if(PLAYER_LIST[playerKey].ready()){
-                    PLAYER_LIST[playerKey].positionData += `${PLAYER_LIST[targetKey].id}*${PLAYER_LIST[targetKey].pos[0]-PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[targetKey].pos[1]-PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[targetKey].state}@`;
+                    PLAYER_LIST[playerKey].positionData += `${PLAYER_LIST[targetKey].id}*${PLAYER_LIST[targetKey].pos[0]-tempPos[0]}*${PLAYER_LIST[targetKey].pos[1]-tempPos[1]}*${PLAYER_LIST[targetKey].state}@`;
                 }
             }
             server.send(PLAYER_LIST[playerKey].positionData, PLAYER_LIST[playerKey].port, PLAYER_LIST[playerKey].ipaddress);
