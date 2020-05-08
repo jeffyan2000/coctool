@@ -4,6 +4,7 @@ const express = require('express');
 
 //import custom modules
 const p = require('./js/Player.js');
+const r = require('./js/Room.js');
 
 const app = express();
 
@@ -28,6 +29,9 @@ for (var i = 0; i < ID_VOC.length; i++) {
 
 //existing connections
 var PLAYER_LIST = {};
+
+var room = new r.Room();
+room.read_from("default");
 
 //receiving udp messages
 server.on('message', (msg, rinfo) => {
