@@ -31,6 +31,11 @@ class Player {
     return false;
   }
 
+  setPos(x, y){
+    this.pos[0] = x;
+    this.pos[1] = y;
+  }
+
   move(){
     this.direction[0] = 0;
     this.direction[1] = 0;
@@ -56,8 +61,10 @@ class Player {
         flag = true;
         flag2 = 0;
       }
+      
     this.pos[0] += this.speed * this.direction[0];
     this.pos[1] += this.speed * this.direction[1];
+
     this.updateState(flag);
     if(flag2 != -1){
       this.updateDirection(flag2);

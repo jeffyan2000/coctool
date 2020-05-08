@@ -30,7 +30,7 @@ for (var i = 0; i < ID_VOC.length; i++) {
 //existing connections
 var PLAYER_LIST = {};
 
-var room = new r.Room();
+var room = new r.Room([480, 480]);
 room.read_from("default");
 
 //receiving udp messages
@@ -56,7 +56,8 @@ io.sockets.on('connection', function(socket){
         ipvaddress = ipvaddress.substr(7);
     }
 
-	var player = new p.Player(ipvaddress, socket.id, socket);
+    var player = new p.Player(ipvaddress, socket.id, socket);
+    room.addPlayer(player);
     PLAYER_LIST[socket.id] = player;
 
     socket.emit("id", socket.id);
@@ -79,6 +80,7 @@ io.sockets.on('connection', function(socket){
     });
 
 	socket.on('disconnect',function(){
+          room.removePlayer(player);
           delete PLAYER_LIST[socket.id];
           ID_LIST[socket.id] = true;
           console.log(socket.id + " left the game");
@@ -120,16 +122,13 @@ function boardcastAllSockets(title, dataPacket){
 }
 
 var sendPositionPacket = function(){
-    for(playerKey in PLAYER_LIST){
-        if(PLAYER_LIST[playerKey].ready()){
-            PLAYER_LIST[playerKey].update();
-        }
-    }
+    room.update();
 
     for(playerKey in PLAYER_LIST){
         if(PLAYER_LIST[playerKey].ready()){
             PLAYER_LIST[playerKey].positionData = `000!*${PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[playerKey].pos[1]}@`;
-            for(targetKey in PLAYER_LIST){
+            var mapSize = [room.tileSize*room.mapSize[0], room.tileSize*room.mapSize[1]];
+            for(targetKey in room.players){
                 if(PLAYER_LIST[playerKey].ready()){
                     PLAYER_LIST[playerKey].positionData += `${PLAYER_LIST[targetKey].id}*${PLAYER_LIST[targetKey].pos[0]-PLAYER_LIST[playerKey].pos[0]}*${PLAYER_LIST[targetKey].pos[1]-PLAYER_LIST[playerKey].pos[1]}*${PLAYER_LIST[targetKey].state}@`;
                 }
