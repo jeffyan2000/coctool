@@ -1,5 +1,18 @@
 var KEYS = require('./config/keys.json');
 
+class Item {
+  constructor(id){
+    this.id = id;
+    this.dropped = false;
+  }
+}
+
+class BackPack {
+  constructor(size){
+    this.size = size;
+  }
+}
+
 class Player {
   constructor(ipaddress, id, socket) {
     this.socket = socket;
