@@ -9,6 +9,7 @@ class Room {
       this.startpos = [startposition[0], startposition[1]];
       this.tileSize = 48;
       this.mapSize = [0, 0];
+      this.items = {};
     }
 
     update(){
