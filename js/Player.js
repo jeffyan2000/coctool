@@ -1,15 +1,27 @@
 var KEYS = require('./config/keys.json');
 
 class Item {
-  constructor(id){
+  constructor(id, name){
     this.id = id;
     this.dropped = false;
+    this.name = name;
   }
 }
 
 class BackPack {
   constructor(size){
     this.size = size;
+    this.slots = [];
+    this.grabbed = null;
+    for(var i = 0; i < size; i++){
+      this.slots.append(null);
+    }
+  }
+
+  switchItem(slot){
+    var temp = this.grabbed;
+    this.grabbed = this.slots[slot];
+    this.slots[slot] = temp;
   }
 }
 
@@ -28,6 +40,8 @@ class Player {
     this.skin = "";
     this.init();
 
+    this.backpack = new BackPack(24);
+
     this.positionData = "";
   }
 
@@ -35,6 +49,10 @@ class Player {
       for (var key in KEYS.list) {
         this.keypressed[KEYS.list[key]] = false;
     }
+  }
+
+  requestSlotRotate(slot){
+    this.backpack.switchItems(slot);
   }
 
   ready(){

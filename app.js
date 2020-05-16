@@ -79,6 +79,10 @@ io.sockets.on('connection', function(socket){
         }
     });
 
+    socket.on('backpackOperation',function(data){
+        player.requestSlotRotate(data);
+    });
+
 	socket.on('disconnect',function(){
           room.removePlayer(player);
           delete PLAYER_LIST[socket.id];
