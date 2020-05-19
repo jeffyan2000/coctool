@@ -14,8 +14,10 @@ class BackPack {
     this.slots = [];
     this.grabbed = null;
     for(var i = 0; i < size; i++){
-      this.slots.append(null);
+      this.slots.push(null);
     }
+    this.slots[0] = 1;
+    this.slots[1] = 2;
   }
 
   switchItem(slot){
@@ -23,13 +25,24 @@ class BackPack {
     this.grabbed = this.slots[slot];
     this.slots[slot] = temp;
   }
+
+  prepareInfoPack(){
+    var temp = "";
+    for(var slot in this.slots){
+      temp += "@";
+      if(this.slots[slot]){
+        temp += `${this.slots[slot]}`;
+      }
+    }
+    return temp;
+  }
 }
 
 class Player {
   constructor(ipaddress, id, socket) {
     this.socket = socket;
     this.ipaddress = ipaddress;
-    this.id = id;
+    this.id = id; 
     this.pos = [0, 0];
     this.state = 0;
     this.speed = 4;
@@ -52,7 +65,7 @@ class Player {
   }
 
   requestSlotRotate(slot){
-    this.backpack.switchItems(slot);
+    this.backpack.switchItem(slot);
   }
 
   ready(){

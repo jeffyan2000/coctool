@@ -83,6 +83,15 @@ io.sockets.on('connection', function(socket){
         player.requestSlotRotate(data);
     });
 
+    /*
+        1 for backpack gui
+    */
+    socket.on('requestOpenGui', function(data){
+        if(data == "1"){
+            socket.emit('openGui', "1"+player.backpack.prepareInfoPack());
+        }
+    });
+
 	socket.on('disconnect',function(){
           room.removePlayer(player);
           delete PLAYER_LIST[socket.id];
