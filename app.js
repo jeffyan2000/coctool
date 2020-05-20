@@ -57,6 +57,7 @@ io.sockets.on('connection', function(socket){
     }
 
     var player = new p.Player(ipvaddress, socket.id, socket);
+    player.room = room;
     room.addPlayer(player);
     PLAYER_LIST[socket.id] = player;
 
@@ -89,6 +90,16 @@ io.sockets.on('connection', function(socket){
     socket.on('requestOpenGui', function(data){
         if(data == "1"){
             socket.emit('openGui', "1"+player.backpack.prepareInfoPack());
+        }
+    });
+
+    socket.on('requestCloseGui', function(data){
+        if(data == "1"){
+            if(player.backpack.grabbed){
+                player.room.dropItem(new p.Item(player.backpack.grabbed), player.pos);
+                boardcastAll(`100${player.backpack.grabbed}@${player.pos[0]}@${player.pos[1]}`);
+                player.backpack.grabbed = null;
+            }
         }
     });
 

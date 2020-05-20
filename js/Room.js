@@ -12,6 +12,11 @@ class Room {
       this.items = {};
     }
 
+    dropItem(item, pos){
+      this.items[item.id] = item;
+      this.items[item.id].drop(pos);
+    }
+
     update(){
       for(playerKey in this.players){
         var player = this.players[playerKey];

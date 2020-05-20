@@ -1,10 +1,16 @@
 var KEYS = require('./config/keys.json');
 
 class Item {
-  constructor(id, name){
+  constructor(id){
     this.id = id;
     this.dropped = false;
-    this.name = name;
+    this.pos = [0, 0]
+  }
+
+  drop(pos){
+    this.dropped = true;
+    this.pos[0] = pos[0];
+    this.pos[1] = pos[1]; 
   }
 }
 
@@ -52,6 +58,7 @@ class Player {
     this.name = "";
     this.skin = "";
     this.init();
+    this.room = null;
 
     this.backpack = new BackPack(24);
 
@@ -172,4 +179,4 @@ class Player {
   }
 }
 
-module.exports = {Player};
+module.exports = {Player, Item, BackPack};
