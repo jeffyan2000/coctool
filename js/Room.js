@@ -1,6 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 
+class Interactables {
+  constructor(hitbox, trigger, action){
+    this.hitbox = hitbox;
+    this.trigger = trigger;
+    this.action = action;
+  }
+
+  isTriggeredBy(player){
+    if(this.trigger == "hit"){
+      if(this.hitbox){
+        
+      }
+    }
+  }
+}
+
 class Room {
     constructor(startposition) {
       this.players = {};
@@ -26,8 +42,7 @@ class Room {
           tempPos[1] = player.pos[1];
           player.update();
 
-          var tempPoints = [Math.floor((player.pos[1]+60)/this.tileSize), Math.floor((player.pos[1]+75)/this.tileSize),
-                            Math.floor((player.pos[0]+20)/this.tileSize), Math.floor((player.pos[0]+60)/this.tileSize)];
+          var tempPoints = player.getGridPos(this.tileSize);
           
           if((tempPoints[0] >= this.mapSize[1] || tempPoints[0] < 0) ||
               (tempPoints[1] >= this.mapSize[1] || tempPoints[1] < 0) ||

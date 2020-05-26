@@ -65,6 +65,11 @@ class Player {
     this.positionData = "";
   }
 
+  getGridPos(tileSize){
+    return [Math.floor((player.pos[1]+60)/tileSize), Math.floor((player.pos[1]+75)/tileSize),
+                            Math.floor((player.pos[0]+20)/tileSize), Math.floor((player.pos[0]+60)/tileSize)];
+  }
+
   init(){
       for (var key in KEYS.list) {
         this.keypressed[KEYS.list[key]] = false;
